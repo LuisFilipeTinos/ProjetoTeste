@@ -21,6 +21,9 @@ public class PlayerTriggers : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI scoreText;
 
+    [SerializeField]
+    MainMenuManager mainMenuManager;
+
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -40,12 +43,25 @@ public class PlayerTriggers : MonoBehaviour
             healthText.text = playerHealth.Health.ToString();
 
             if (playerHealth.Health == 0)
-                Destroy(this.gameObject);
+                EndGame();
             else
                 StartCoroutine(TakeDamage());
         }
 
         Destroy(collision.gameObject);
+    }
+
+    public void EndGame()
+    {
+        if (playerHealth.Health == 0)
+        {
+            var spawners = GameObject.FindGameObjectsWithTag("Spawner");
+            foreach (var item in spawners)
+                Destroy(item);
+
+            mainMenuManager.GameOver();
+            Destroy(this.gameObject);
+        }
     }
 
     private IEnumerator TakeDamage()

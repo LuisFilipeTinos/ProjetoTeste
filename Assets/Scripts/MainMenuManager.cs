@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -15,6 +18,9 @@ public class MainMenuManager : MonoBehaviour
 
     [SerializeField]
     SpawnerController beettleSpawner;
+    
+    [SerializeField]
+    SpawnerController batSpawner;
 
     [SerializeField]
     Animator miniFadeAnim;
@@ -40,9 +46,27 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField]
     Animator healthLabelAnim;
 
+    [SerializeField]
+    Animator gameOverAnim;
+
+    [SerializeField]
+    Animator restartAnim;
+
+    [SerializeField]
+    Button startButton;
+
+    [SerializeField]
+    Button exitButton;
+
+    [SerializeField]
+    Button restartButton;
 
     void Start()
     {
+        startButton.interactable = false;
+        restartButton.interactable = false;
+        exitButton.interactable = false;
+
         Invoke("CallFadeIn", 2f);
         Invoke("CallTextFadeIn", 2.5f);
     }
@@ -56,6 +80,11 @@ public class MainMenuManager : MonoBehaviour
         titleAnim.Play("FadeInText");
         startAnim.Play("FadeInButton");
         exitAnim.Play("FadeInButton");
+
+        startButton.interactable = true;
+        exitButton.interactable = true;
+
+        restartButton.gameObject.SetActive(false);
     }
 
     public void StartGame()
@@ -65,6 +94,9 @@ public class MainMenuManager : MonoBehaviour
 
     public IEnumerator StartPlaying()
     {
+        startButton.interactable = false;
+        exitButton.interactable = false;
+
         titleAnim.Play("FadeOutText");
         startAnim.Play("FadeOutButton");
         exitAnim.Play("FadeOutButton");
@@ -77,10 +109,42 @@ public class MainMenuManager : MonoBehaviour
         enemySpawner.canSpawn = true;
         objectSpawner.canSpawn = true;
         beettleSpawner.canSpawn = true;
+        batSpawner.canSpawn = true;
 
         scoreAnim.Play("FadeInText");
         scoreLabelAnim.Play("FadeInText");
         healthAnim.Play("FadeInText");
         healthLabelAnim.Play("FadeInText");
+
+        startButton.gameObject.SetActive(false);
+        restartButton.gameObject.SetActive(true);
+    }
+
+    public void GameOver()
+    {
+        StartCoroutine(FinishGame());
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
+
+    private IEnumerator FinishGame()
+    {
+        yield return new WaitForSeconds(0.6f);
+        miniFadeAnim.Play("MiniFadeInTransition");
+
+        gameOverAnim.Play("FadeInText");
+        restartAnim.Play("FadeInButton");
+        exitAnim.Play("FadeInButton");
+
+        exitButton.interactable = true;
+        restartButton.interactable = true;
     }
 }

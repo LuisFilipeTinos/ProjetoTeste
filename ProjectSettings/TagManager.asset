@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Ground
   - Health
+  - Spawner
   layers:
   - Default
   - TransparentFX
