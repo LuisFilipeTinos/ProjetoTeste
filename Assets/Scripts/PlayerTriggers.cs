@@ -24,6 +24,9 @@ public class PlayerTriggers : MonoBehaviour
     [SerializeField]
     MainMenuManager mainMenuManager;
 
+    [SerializeField]
+    CameraShake cameraShake;
+
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -67,6 +70,9 @@ public class PlayerTriggers : MonoBehaviour
     private IEnumerator TakeDamage()
     {
         isTakingDamage = true;
+        cameraShake.intensity = 0.2f;
+        yield return new WaitForSeconds(0.4f);
+        cameraShake.intensity = 0f;
         spriteRenderer.color = Color.red;
         yield return new WaitForSeconds(0.09f);
         spriteRenderer.color = Color.white;
